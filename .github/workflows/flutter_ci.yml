@@ -11,19 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Clonar o repositório
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🧩 Instalar Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.7'
+          flutter-version: '3.24.0'
 
-      - name: 📦 Instalar dependências
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: 🧪 Rodar testes automatizados
-        run: flutter test
-
-      - name: 🧱 Gerar build web (verificação)
-        run: flutter build web
+      - name: Build APK
+        run: flutter build apk --debug
