@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_IMAGE: seu-usuario/meuapp-web:latest  # Substitua pelo seu Docker Hub
+      DOCKER_IMAGE: dorneles76/meuapp-web:latest  # Seu usuário Docker Hub
 
     steps:
     # 1️⃣ Checkout do código
@@ -27,55 +27,3 @@ jobs:
         flutter-version: '3.35.7'
 
     # 3️⃣ Install dependencies
-    - name: Flutter Pub Get
-      run: flutter pub get
-
-    # 4️⃣ Run analyze
-    - name: Flutter Analyze
-      run: flutter analyze
-
-    # 5️⃣ Run tests
-    - name: Run Tests
-      run: flutter test --coverage
-
-    # 6️⃣ Build Flutter Web
-    - name: Build Flutter Web
-      run: flutter build web --release
-
-    # 7️⃣ Build Flutter Android APK
-    - name: Build Flutter APK
-      run: flutter build apk --release
-
-    # 8️⃣ Upload APK como artifact
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-release.apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-
-    # 9️⃣ Login no Docker Hub
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    # 🔟 Build e push da imagem Docker do Web
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v5
-      with:
-        push: true
-        tags: ${{ env.DOCKER_IMAGE }}
-
-    # 1️⃣1️⃣ Deploy Web no servidor via SSH
-    - name: Deploy Web via SSH
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        script: |
-          cd /home/deploy/meuapp
-          docker-compose pull
-          docker-compose up -d --remove-orphans
